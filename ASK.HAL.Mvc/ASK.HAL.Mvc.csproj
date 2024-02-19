@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Authors>Vincent DARON</Authors>
+        <PackageTags>HAL, Hypertext Application Language, Rest, Hateoas, ASPNET </PackageTags>
+        <Title>Hypertext Application Language library</Title>
+        <Copyright>Vincent DARON</Copyright>
+        <PackageProjectUrl>https://github.com/ask-be/hal</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/ask-be/hal</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageId>ASK.HAL.Mvc</PackageId>
+        <AssemblyName>ASK.HAL.Mvc</AssemblyName>
+        <RootNamespace>ASK.HAL.Mvc</RootNamespace>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageLicenseExpression>LGPL-3.0-or-later</PackageLicenseExpression>
+        <TargetFrameworks>net8.0;net6.0</TargetFrameworks>
+        <Version>1.0.2</Version>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App"/>
+        <PackageReference Include="HeaderPropagation" Version="3.0.2"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\ASK.HAL\ASK.HAL.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="..\README.md" Pack="true" PackagePath="\"/>
+    </ItemGroup>
+
+</Project>

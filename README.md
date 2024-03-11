@@ -89,7 +89,7 @@ builder.Services
 var app = builder.Build();
 
 ...
-// Adding HeaderPropagation is required by the IResourceAccessor
+// Adding HeaderPropagation is required by the IResourceClient
 app.UseHeaderPropagation();
 
 ...

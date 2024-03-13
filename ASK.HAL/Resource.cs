@@ -45,9 +45,9 @@ public class Resource
         return _embedded.GetValueOrDefault(rel);
     }
 
-    public bool ContainsLink(string name)
+    public bool ContainsLink(string rel)
     {
-        return _links.ContainsKey(name);
+        return _links.ContainsKey(rel);
     }
 
     public bool ContainsEmbedded(string name)
@@ -55,9 +55,12 @@ public class Resource
         return _embedded.ContainsKey(name);
     }
 
-    public Resource RemoveLink(string name)
+    public Resource RemoveLink(string rel)
     {
-        _links.Remove(name);
+        if (!ContainsLink(rel))
+            throw new ResourceException($"A link with rel '{rel}' does not exists");
+        
+        _links.Remove(rel);
         return this;
     }
 
@@ -67,21 +70,24 @@ public class Resource
         return this;
     }
 
-    public Resource AddLink(string name, Uri url)
+    public Resource AddLink(string rel, Uri url)
     {
-        _links.Add(name, new SingleOrList<Link>(new Link(url)));
+        if (ContainsLink(rel))
+            throw new ResourceException($"A link with rel '{rel}' already exists");
+        
+        _links.Add(rel, new SingleOrList<Link>(new Link(url)));
         return this;
     }
 
-    public Resource AddLink(string name, Link link)
+    public Resource AddLink(string rel, Link link)
     {
-        _links.Add(name, new SingleOrList<Link>(link));
+        _links.Add(rel, new SingleOrList<Link>(link));
         return this;
     }
 
-    public Resource AddLink(string name, params Link[] links)
+    public Resource AddLink(string rel, params Link[] links)
     {
-        _links.Add(name, new SingleOrList<Link>(links));
+        _links.Add(rel, new SingleOrList<Link>(links));
         return this;
     }
 
@@ -110,12 +116,19 @@ public class Resource
 
     public T? As<T>()
     {
-        return Values.Deserialize<T>();
+        return Values.Deserialize<T>(_jsonSerializerOptions);
     }
 
     public T? GetValue<T>(string propertyName)
     {
-        return Values.TryGetPropertyValue(propertyName, out var node) ? node.Deserialize<T>() : default;
+        try
+        {
+            return Values.TryGetPropertyValue(propertyName, out var node) ? node.Deserialize<T>() : default;
+        }
+        catch (Exception e)
+        {
+            throw new ResourceException($"Error while returning resource property '{propertyName}' as a '{typeof(T)}'", e);
+        }
     }
 
 

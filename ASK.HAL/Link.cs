@@ -5,11 +5,6 @@ namespace ASK.HAL;
 /// </summary>
 public class Link
 {
-    public Link(string href) : this(new Uri(href))
-    {
-            
-    }
-        
     /// <summary>
     /// Create a new Link
     /// </summary>
@@ -64,6 +59,20 @@ public class Link
         Type = type;
         Hreflang = hrefLang;
         Profile = profile;
+    }
+    
+    public Link(
+        string href,
+        string? title = null,
+        string? type = null,
+        string? name = null,
+        bool templated = false,
+        string? deprecation = null,
+        string? hrefLang = null,
+        string? profile = null)
+        :this(new Uri(href),title,type,name,templated,deprecation,hrefLang,profile)
+    {
+        
     }
 
     /// <summary>

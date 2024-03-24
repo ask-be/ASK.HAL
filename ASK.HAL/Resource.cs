@@ -4,6 +4,9 @@ using ASK.HAL.Tools;
 
 namespace ASK.HAL;
 
+/// <summary>
+/// A Resource Object represents a resource.
+/// </summary>
 public class Resource
 {
     private readonly JsonSerializerOptions _jsonSerializerOptions;
@@ -38,6 +41,11 @@ public class Resource
     public SingleOrList<Link>? GetLink(string rel)
     {
         return _links.GetValueOrDefault(rel);
+    }
+    
+    public IReadOnlyList<Link> GetCuries()
+    {
+        return _links.GetValueOrDefault(Constants.Curies)?.Values ?? ArraySegment<Link>.Empty;
     }
 
     public SingleOrList<Resource>? GetEmbeddedResource(string rel)
@@ -90,7 +98,13 @@ public class Resource
         _links.Add(rel, new SingleOrList<Link>(links));
         return this;
     }
-
+    
+    public Resource AddCurie(params Link[] links)
+    {
+        AddLink(Constants.Curies, links);
+        return this;
+    }
+    
     public Resource AddEmbedded(string name, Resource resource)
     {
         _embedded.Add(name, new SingleOrList<Resource>(resource));
@@ -130,8 +144,7 @@ public class Resource
             throw new ResourceException($"Error while returning resource property '{propertyName}' as a '{typeof(T)}'", e);
         }
     }
-
-
+    
     internal IReadOnlyDictionary<string, SingleOrList<Link>> GetLinks()
     {
         return _links;

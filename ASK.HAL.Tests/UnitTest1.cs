@@ -10,7 +10,7 @@ public class ResourceTests
     private readonly IResourceFactory _resourceFactory = new ResourceFactory(new JsonSerializerOptions(JsonSerializerDefaults.Web)
     {
         Converters = {new ResourceJsonConverter()},
-        WriteIndented = true
+        WriteIndented = true,
     });
     
     [Fact]

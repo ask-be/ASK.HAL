@@ -20,7 +20,7 @@ public class SingleOrList<T>
     
     public int Count => _values.Count;
 
-    public IEnumerable<T> Values => _values;
+    public IReadOnlyList<T> Values => _values;
 
     public T Value => _values[0];
 

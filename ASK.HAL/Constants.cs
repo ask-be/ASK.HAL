@@ -7,6 +7,7 @@ public static class Constants
     public const string Links = "_links";
     public const string Embedded = "_embedded";
     public const string Self = "self";
+    public const string Curies = "curies";
     public const string HrefPropertyName = "href";
     public const string HypertextApplicationLanguageJsonMediaType = "application/hal+json";
     public const string DeprecationPropertyName = "deprecation";

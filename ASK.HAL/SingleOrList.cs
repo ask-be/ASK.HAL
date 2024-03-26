@@ -1,6 +1,6 @@
 namespace ASK.HAL;
 
-public class SingleOrList<T>
+internal class SingleOrList<T>
 {
     private readonly List<T> _values = new List<T>();
 
@@ -22,7 +22,7 @@ public class SingleOrList<T>
 
     public IReadOnlyList<T> Values => _values;
 
-    public T Value => _values[0];
+    public T Value => SingleValued ? _values[0] : throw new ArgumentException("This is multivalued");
 
     public bool SingleValued { get; }
 }

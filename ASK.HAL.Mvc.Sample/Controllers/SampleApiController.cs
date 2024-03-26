@@ -51,7 +51,7 @@ public class SampleApiController : Controller
         var result = _resourceFactory.Create(_resourceUriFactory.GetUriByName("list"));
         result.Add(request);
 
-        result.AddEmbedded("list",
+        result.AddEmbeddedResources("list",
             Enumerable
                 .Range(1, 500)
                 .Skip(request.Index)

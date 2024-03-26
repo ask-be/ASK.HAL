@@ -246,6 +246,9 @@ public class ResourceJsonConverter : JsonConverter<Resource>
                 case Constants.TypePropertyName:
                     type = reader.GetString();
                     break;
+                default:
+                    reader.Skip();
+                    break;
             }
         }
 

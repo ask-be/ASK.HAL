@@ -32,12 +32,12 @@ public class AutoExpandActionFilter : IAsyncActionFilter
                 continue;
             
             // Check if we must expand
-            if (!resource.ContainsLink(toExpand) || resource.ContainsEmbedded(toExpand)) 
+            if (!resource.ContainsLink(toExpand) || resource.ContainsEmbeddedResource(toExpand)) 
                 continue;
 
             try
             {
-                var link = resource.GetLink(toExpand)!.Value;
+                var link = resource.GetLink(toExpand)!;
                 
                 // Ignore invalid content types
                 if(!string.IsNullOrEmpty(link.Type) && link.Type != Constants.HypertextApplicationLanguageJsonMediaType)
@@ -46,7 +46,7 @@ public class AutoExpandActionFilter : IAsyncActionFilter
                 var r = await _resourceClient.GetResource(link.Href);
                 if (r is not null)
                 {
-                    resource.AddEmbedded(toExpand, r);
+                    resource.AddEmbeddedResource(toExpand, r);
                 }
             }
             catch (Exception e)

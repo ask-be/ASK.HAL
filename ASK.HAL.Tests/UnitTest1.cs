@@ -21,7 +21,7 @@ public class ResourceTests
         var r = _resourceFactory.Create(self);
         r.Should().NotBeNull();
         r.Self.Should().Be(self);
-        r.GetLink("self").Value.Href.Should().Be(self);
+        r.GetLink("self")!.Href.Should().Be(self);
     }
     
     [Fact]
@@ -31,9 +31,8 @@ public class ResourceTests
 
         var r = _resourceFactory.Create("http://self").AddLink("other", new Uri(linkUri));
         var link = r.GetLink("other");
-        
-        link!.SingleValued.Should().BeTrue();
-        link.Value.Href.Should().Be(linkUri);
+        link.Should().NotBeNull();
+        link!.Href.Should().Be(linkUri);
     }
     
     [Fact]
@@ -69,15 +68,13 @@ public class ResourceTests
         var linkUri2 = new Uri("http://link2");
 
         var r = _resourceFactory.Create("http://self")
-                                .AddLink("other", 
+                                .AddLinks("other", 
                                     new Link(linkUri,name:"1"), 
                                     new Link(linkUri2,name:"2"));
         
-        var link = r.GetLink("other");
-        
-        link!.SingleValued.Should().BeFalse();
-        link.Values.First(x => x.Name == "1").Href.Should().Be(linkUri);
-        link.Values.First(x => x.Name == "2").Href.Should().Be(linkUri2);
+        var links = r.GetLinks("other");
+        links.First(x => x.Name == "1").Href.Should().Be(linkUri);
+        links.First(x => x.Name == "2").Href.Should().Be(linkUri2);
     }
 
     [Fact]
@@ -163,4 +160,15 @@ public class ResourceTests
     }
 
     public record Employee(string FirstName, string LastName, DateTime BirthDate);
+
+    [Fact]
+    public void EnsureWeIgnoreLinkAdditionalJsonProperties()
+    {
+        var json = "{\"_links\":{\"self\":{\"href\":\"http://localhost:5000/api/projects/3af0f98a85684c88bc6e59bb9d62e43e\"},\"diagrams\":{\"href\":\"http://localhost:5000/api/projects/3af0f98a85684c88bc6e59bb9d62e43e/model/diagrams\"},\"model\":{\"href\":\"http://localhost:5000/api/projects/3af0f98a85684c88bc6e59bb9d62e43e/model\"},\"hubs\":{\"href\":\"http://localhost:5000/api/projects/3af0f98a85684c88bc6e59bb9d62e43e/model/hubs\"},\"links\":{\"href\":\"http://localhost:5000/api/projects/3af0f98a85684c88bc6e59bb9d62e43e/model/links\"},\"sourceSystems\":{\"href\":\"http://localhost:5000/api/projects/3af0f98a85684c88bc6e59bb9d62e43e/metavault/sourcesystems\"},\"versions\":{\"href\":\"http://localhost:5000/api/projects/3af0f98a85684c88bc6e59bb9d62e43e/versions\"},\"environments\":{\"href\":\"http://localhost:5000/api/projects/3af0f98a85684c88bc6e59bb9d62e43e/environments\"},\"hubmappings\":{\"href\":\"http://localhost:5000/api/projects/3af0f98a85684c88bc6e59bb9d62e43e/mappings/hubs\"},\"linkmappings\":{\"href\":\"http://localhost:5000/api/projects/3af0f98a85684c88bc6e59bb9d62e43e/mappings/links\"},\"snapshots\":{\"href\":\"http://localhost:5000/api/projects/3af0f98a85684c88bc6e59bb9d62e43e/model/snapshots\"},\"servers\":{\"href\":\"http://localhost:5000/api/projects/3af0f98a85684c88bc6e59bb9d62e43e/servers\",\"method\":[\"GET\"]},\"dataqualities\":{\"href\":\"http://localhost:5000/api/projects/3af0f98a85684c88bc6e59bb9d62e43e/dataquality\"},\"queries\":{\"href\":\"http://localhost:5000/api/projects/3af0f98a85684c88bc6e59bb9d62e43e/queries\"},\"testtemplate\":{\"href\":\"http://localhost:5000/api/templates/test\",\"method\":[\"POST\"]}},\"id\":\"3af0f98a85684c88bc6e59bb9d62e43e\",\"name\":\"Dylan_Bob\",\"technicalName\":\"Dylan_Bob\",\"displayName\":\"Sales\",\"creationDate\":\"2024-03-26T15:21:12.0569411Z\",\"description\":\"Sales Domain\",\"numberOfHubs\":0,\"numberOfSources\":0,\"numberOfDataQualityControls\":0}";
+        var rrr = ResourceJsonSerializer.Deserialize(json, new JsonSerializerOptions(JsonSerializerDefaults.Web)
+        {
+            Converters = {new ResourceJsonConverter()},
+            WriteIndented = true,
+        });
+    }
 }

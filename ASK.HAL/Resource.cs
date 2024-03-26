@@ -38,9 +38,13 @@ public class Resource
 
     public Uri Self => _links[Constants.Self].Value.Href;
 
-    public SingleOrList<Link>? GetLink(string rel)
+    public Link? GetLink(string rel)
     {
-        return _links.GetValueOrDefault(rel);
+        return _links.GetValueOrDefault(rel)?.Value;
+    }
+    public IReadOnlyList<Link> GetLinks(string rel)
+    {
+        return _links.GetValueOrDefault(rel)?.Values ?? ArraySegment<Link>.Empty;
     }
     
     public IReadOnlyList<Link> GetCuries()
@@ -48,9 +52,14 @@ public class Resource
         return _links.GetValueOrDefault(Constants.Curies)?.Values ?? ArraySegment<Link>.Empty;
     }
 
-    public SingleOrList<Resource>? GetEmbeddedResource(string rel)
+    public Resource? GetEmbeddedResource(string rel)
     {
-        return _embedded.GetValueOrDefault(rel);
+        return _embedded.GetValueOrDefault(rel)?.Value;
+    }
+    
+    public IReadOnlyList<Resource> GetEmbeddedResources(string rel)
+    {
+        return _embedded.GetValueOrDefault(rel)?.Values ?? ArraySegment<Resource>.Empty;
     }
 
     public bool ContainsLink(string rel)
@@ -58,7 +67,7 @@ public class Resource
         return _links.ContainsKey(rel);
     }
 
-    public bool ContainsEmbedded(string name)
+    public bool ContainsEmbeddedResource(string name)
     {
         return _embedded.ContainsKey(name);
     }
@@ -72,7 +81,7 @@ public class Resource
         return this;
     }
 
-    public Resource RemoveEmbedded(string name)
+    public Resource RemoveEmbeddedResource(string name)
     {
         _embedded.Remove(name);
         return this;
@@ -93,7 +102,7 @@ public class Resource
         return this;
     }
 
-    public Resource AddLink(string rel, params Link[] links)
+    public Resource AddLinks(string rel, params Link[] links)
     {
         _links.Add(rel, new SingleOrList<Link>(links));
         return this;
@@ -101,17 +110,17 @@ public class Resource
     
     public Resource AddCurie(params Link[] links)
     {
-        AddLink(Constants.Curies, links);
+        AddLinks(Constants.Curies, links);
         return this;
     }
     
-    public Resource AddEmbedded(string name, Resource resource)
+    public Resource AddEmbeddedResource(string name, Resource resource)
     {
         _embedded.Add(name, new SingleOrList<Resource>(resource));
         return this;
     }
 
-    public Resource AddEmbedded(string name, params Resource[] resources)
+    public Resource AddEmbeddedResources(string name, params Resource[] resources)
     {
         _embedded.Add(name, new SingleOrList<Resource>(resources));
         return this;

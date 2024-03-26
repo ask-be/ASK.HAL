@@ -20,4 +20,6 @@ public class ResourceFactory : IResourceFactory
     {
         return new Resource(JsonSerializerOptions, self);
     }
+    
+    
 }

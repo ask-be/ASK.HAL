@@ -17,7 +17,7 @@ public class CuriesUnitTests
     public void CanCreateSimpleCurie()
     {
         var r = _resourceFactory.Create("/orders")
-                                .AddCurie(new Link("https://docs.acme.com/relations/{rel}", name: "acme", templated: true))
+                                .AddCuries(new Link("https://docs.acme.com/relations/{rel}", name: "acme", templated: true))
                                 .AddLink("acme:widgets", new Link("/widgets"));
 
         r.GetCuries().Count.Should().Be(1);
@@ -31,7 +31,7 @@ public class CuriesUnitTests
     public void CanCreateCurieForVersionedLinkRelationType()
     {
         var r = _resourceFactory.Create("/")
-                                .AddCurie(
+                                .AddCuries(
                                     new Link("https://docs.example.com/relations/v1/{rel}", name: "v1", templated: true),
                                     new Link("https://docs.example.com/relations/v2/{rel}", name: "v2", templated: true))
                                 .AddLink("v1:orders", new Link("https://api.example.com/orders", deprecation: "https://dev.example.com/deprecations/v1-orders"))

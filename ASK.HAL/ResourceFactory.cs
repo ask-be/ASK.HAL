@@ -4,13 +4,18 @@ namespace ASK.HAL;
 
 public class ResourceFactory : IResourceFactory
 {
+    private readonly JsonSerializerOptions _jsonSerializerOptions;
+
     public ResourceFactory(JsonSerializerOptions options)
     {
-        JsonSerializerOptions = options;
+        _jsonSerializerOptions = options;
     }
-
-    public JsonSerializerOptions JsonSerializerOptions { get; }
-
+    
+    public Resource Create()
+    {
+        return new Resource(_jsonSerializerOptions);
+    }
+    
     public Resource Create(string self)
     {
         return Create(new Uri(self));
@@ -18,8 +23,6 @@ public class ResourceFactory : IResourceFactory
     
     public Resource Create(Uri self)
     {
-        return new Resource(JsonSerializerOptions, self);
+        return new Resource(_jsonSerializerOptions).AddLink(Constants.Self, self);
     }
-    
-    
 }

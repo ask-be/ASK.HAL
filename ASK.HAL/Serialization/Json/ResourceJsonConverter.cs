@@ -143,9 +143,14 @@ public class ResourceJsonConverter : JsonConverter<Resource>
 
     private static void SerializeLinks(Resource resource, Utf8JsonWriter writer, JsonSerializerOptions o)
     {
+        var allLinks = resource.GetLinks();
+        
+        if (allLinks.Count == 0)
+            return;
+        
         writer.WritePropertyName(Constants.Links);
         writer.WriteStartObject();
-        foreach (var (key, links) in resource.GetLinks())
+        foreach (var (key, links) in allLinks)
         {
             WritePropertyName(writer, key, o);
             if (links.SingleValued)

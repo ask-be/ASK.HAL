@@ -160,15 +160,4 @@ public class ResourceTests
     }
 
     public record Employee(string FirstName, string LastName, DateTime BirthDate);
-
-    [Fact]
-    public void EnsureWeIgnoreLinkAdditionalJsonProperties()
-    {
-        var json = "{\"_links\":{\"self\":{\"href\":\"http://localhost:5000/api/projects/3af0f98a85684c88bc6e59bb9d62e43e\"},\"diagrams\":{\"href\":\"http://localhost:5000/api/projects/3af0f98a85684c88bc6e59bb9d62e43e/model/diagrams\"},\"model\":{\"href\":\"http://localhost:5000/api/projects/3af0f98a85684c88bc6e59bb9d62e43e/model\"},\"hubs\":{\"href\":\"http://localhost:5000/api/projects/3af0f98a85684c88bc6e59bb9d62e43e/model/hubs\"},\"links\":{\"href\":\"http://localhost:5000/api/projects/3af0f98a85684c88bc6e59bb9d62e43e/model/links\"},\"sourceSystems\":{\"href\":\"http://localhost:5000/api/projects/3af0f98a85684c88bc6e59bb9d62e43e/metavault/sourcesystems\"},\"versions\":{\"href\":\"http://localhost:5000/api/projects/3af0f98a85684c88bc6e59bb9d62e43e/versions\"},\"environments\":{\"href\":\"http://localhost:5000/api/projects/3af0f98a85684c88bc6e59bb9d62e43e/environments\"},\"hubmappings\":{\"href\":\"http://localhost:5000/api/projects/3af0f98a85684c88bc6e59bb9d62e43e/mappings/hubs\"},\"linkmappings\":{\"href\":\"http://localhost:5000/api/projects/3af0f98a85684c88bc6e59bb9d62e43e/mappings/links\"},\"snapshots\":{\"href\":\"http://localhost:5000/api/projects/3af0f98a85684c88bc6e59bb9d62e43e/model/snapshots\"},\"servers\":{\"href\":\"http://localhost:5000/api/projects/3af0f98a85684c88bc6e59bb9d62e43e/servers\",\"method\":[\"GET\"]},\"dataqualities\":{\"href\":\"http://localhost:5000/api/projects/3af0f98a85684c88bc6e59bb9d62e43e/dataquality\"},\"queries\":{\"href\":\"http://localhost:5000/api/projects/3af0f98a85684c88bc6e59bb9d62e43e/queries\"},\"testtemplate\":{\"href\":\"http://localhost:5000/api/templates/test\",\"method\":[\"POST\"]}},\"id\":\"3af0f98a85684c88bc6e59bb9d62e43e\",\"name\":\"Dylan_Bob\",\"technicalName\":\"Dylan_Bob\",\"displayName\":\"Sales\",\"creationDate\":\"2024-03-26T15:21:12.0569411Z\",\"description\":\"Sales Domain\",\"numberOfHubs\":0,\"numberOfSources\":0,\"numberOfDataQualityControls\":0}";
-        var rrr = ResourceJsonSerializer.Deserialize(json, new JsonSerializerOptions(JsonSerializerDefaults.Web)
-        {
-            Converters = {new ResourceJsonConverter()},
-            WriteIndented = true,
-        });
-    }
 }

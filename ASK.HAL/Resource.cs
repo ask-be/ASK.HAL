@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using ASK.HAL.Serialization.Json;
 using ASK.HAL.Tools;
@@ -67,7 +67,7 @@ public class Resource
     }
     
     /// <summary>
-    /// HAL etablishes a mechanism called "curies" which allows for link relation types that are compact
+    /// HAL establishes a mechanism called "curies" which allows for link relation types that are compact
     /// and more human readable (eg. "acme:widgets"), whilst still offering a way that they MAY be expanded
     /// into a dereferencable URI providing documentation (eg. "https://docs.acme.com/relations/widgets")
     /// To this end, HAL documents have a reserved link relation type called "curies".
@@ -116,9 +116,9 @@ public class Resource
     /// </summary>
     /// <param name="rel">Link relation type</param>
     /// <returns></returns>
-    public bool ContainsEmbeddedResource(string name)
+    public bool ContainsEmbeddedResource(string rel)
     {
-        return _embedded.ContainsKey(name);
+        return _embedded.ContainsKey(rel);
     }
 
     /// <summary>

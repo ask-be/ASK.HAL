@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2024 Vincent DARON <vincent@ask.be>
+#
+# SPDX-License-Identifier: CC-BY-4.0
+
 # This workflow will build a .NET project
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
 

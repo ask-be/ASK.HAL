@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2024 Vincent DARON <vincent@ask.be>
+// SPDX-License-Identifier: LGPL-3.0-only
+
 using System.Text.Json;
 using ASK.HAL.Serialization.Json;
 using FluentAssertions;

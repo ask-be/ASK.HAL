@@ -1,12 +1,22 @@
+<!--
+SPDX-FileCopyrightText: 2024 Vincent DARON <vincent@ask.be>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # ASK.HAL
 
-According to [Roy Fielding](https://en.wikipedia.org/wiki/Roy_Fielding), [you may call your API a REST API only if you make use of hypertext](https://roy.gbiv.com/untangled/2008/rest-apis-must-be-hypertext-driven)
+According
+to [Roy Fielding](https://en.wikipedia.org/wiki/Roy_Fielding), [you may call your API a REST API only if you make use of hypertext](https://roy.gbiv.com/untangled/2008/rest-apis-must-be-hypertext-driven)
 
 The ASK.HAL project contains components to ease the creation of REST API following the best practices described in the
-[Hypertext Application Language](https://datatracker.ietf.org/doc/html/draft-kelly-json-hal-11) specification and in books like ["Rest In Practice"](https://www.amazon.com/gp/product/0596805829?ie=UTF8&tag=martinfowlerc-20&linkCode=as2&camp=1789&creative=9325&creativeASIN=0596805829)
+[Hypertext Application Language](https://datatracker.ietf.org/doc/html/draft-kelly-json-hal-11) specification and in
+books
+like ["Rest In Practice"](https://www.amazon.com/gp/product/0596805829?ie=UTF8&tag=martinfowlerc-20&linkCode=as2&camp=1789&creative=9325&creativeASIN=0596805829)
 and ["REST API Design Cookbook"](https://www.amazon.com/REST-Design-Rulebook-Mark-Masse/dp/1449310508/).
 
 The project is composed of 2 components
+
 * ```ASK.HAL``` project contains base classes and interfaces, including Json serialization
 * ```ASK.HAL.Mvc``` project contains component to ease integration of ASK.HAL into ASPNET projects.
 
@@ -32,7 +42,9 @@ var result = factory.Create(new Uri("http://example.com/api/books/in-search-of-l
 
 var json = await ResourceJsonSerializer.Serialize(result);
 ```
+
 Will return the following Json
+
 ```json
 {
    "_links": {
@@ -57,8 +69,8 @@ Will return the following Json
 
 ## How to integrate into ASP.NET project
 
-
 ### First add the reference to your project
+
 ```
 Install-Package ASK.HAL
 Install-Package ASK.HAL.Mvc
@@ -123,25 +135,32 @@ class  MyController : Controller
     }
 }
 ```
+
 For more information, look at the sample project
 
 ## IResourceClient
-If you need to retrieve a remote resource in your code, you can resolve the ```IResourceClient``` from Dependency Injection.
+
+If you need to retrieve a remote resource in your code, you can resolve the ```IResourceClient``` from Dependency
+Injection.
+
 ```csharp
 public interface IResourceClient{
     Task<Resource?> GetResource(Uri uri,CancellationToken cancellationToken = new CancellationToken());
 }
 ```
+
 > [!IMPORTANT]
 > IResourceClient will propagate automatically the current request Cookie and Authentication Http Headers.
 
 ## HyperText Cache Pattern
 
-The [Hypertext Cache Pattern](https://datatracker.ietf.org/doc/html/draft-kelly-json-hal#name-hypertext-cache-pattern) allows the server to automatically fetch resource links and add the result as an embedded resource.
+The [Hypertext Cache Pattern](https://datatracker.ietf.org/doc/html/draft-kelly-json-hal#name-hypertext-cache-pattern)
+allows the server to automatically fetch resource links and add the result as an embedded resource.
 
 Example:
 
 From this request retrieving a book
+
 ```http request
 GET http://server/api/books/the-way-of-zen
 Accept: application/hal+json
@@ -154,7 +173,9 @@ Accept: application/hal+json
    "title": "The way of Zen"
 }
 ```
+
 We can ask the server to fetch the Author link as an embedded resource using the "expand" parameter.
+
 ```http request
 GET http://server/api/books/the-way-of-zen?expand=author
 Accept: application/hal+json
@@ -175,6 +196,7 @@ Accept: application/hal+json
    "title": "The way of Zen"
 }
 ```
+
 The returned resource will automatically contains the embedded resource without changing anything in the Controller.
 
 ### Enable AutoExpand
@@ -192,11 +214,14 @@ builder.Services
 ```
 
 > [!TIP]
-> As the AutoExpand ActionFilter retrieve the resources using HTTP GET calls, it may be more efficient to let the controller
-> retrieve the resource if it can be retrieve locally (in the same controller or in another Controller). Therefore, if the controller process the "expand" parameter
+> As the AutoExpand ActionFilter retrieve the resources using HTTP GET calls, it may be more efficient to let the
+> controller
+> retrieve the resource if it can be retrieve locally (in the same controller or in another Controller). Therefore, if
+> the controller process the "expand" parameter
 > and add the corresponding embedded resource, the ActionFilter will not process it again.
 
 ## Delimited values parameters
+
 ASP.NET Core MVC does not support delimited values for query string parameters because it is not standard.
 
 For example, the uri http://someuri/api?param=val1,val2,val3 cannot be mapped as a string[] in your request object.

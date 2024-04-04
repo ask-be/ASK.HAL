@@ -1,0 +1,16 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: ASK.HAL
+Upstream-Contact: Vincent DARON <vincent@ask.be>
+Source: https://github.com/ask-be/hal
+
+Files: HAL.sln.DotSettings
+Copyright: 2024 Vincent DARON <vincent@ask.be>
+License: LGPL-3.0-only
+
+Files: HAL.sln
+Copyright: 2024 Vincent DARON <vincent@ask.be>
+License: LGPL-3.0-only
+
+Files: **/*.csproj
+Copyright: 2024 Vincent DARON <vincent@ask.be>
+License: LGPL-3.0-only

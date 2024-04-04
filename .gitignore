@@ -1,5 +1,10 @@
+# SPDX-FileCopyrightText: 2024 Vincent DARON <vincent@ask.be>
+#
+# SPDX-License-Identifier: CC-BY-4.0
+
 bin/
 obj/
 /packages/
 riderModule.iml
 /_ReSharper.Caches/
+.idea/

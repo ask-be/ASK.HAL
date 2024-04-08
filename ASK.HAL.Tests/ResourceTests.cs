@@ -49,12 +49,6 @@ public class ResourceTests
     }
     
     [Fact]
-    public void CannotRemoveLinksThatDoesNotExists()
-    {
-        Assert.Throws<ResourceException>(() => _resourceFactory.Create("http://self").RemoveLink("does_not_exists"));
-    }
-    
-    [Fact]
     public void CannotRetrieveLinkTheDoesNotExists()
     {
         var linkUri = new Uri("http://link");

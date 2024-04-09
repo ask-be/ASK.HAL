@@ -14,7 +14,7 @@
         <AssemblyName>ASK.HAL.Mvc</AssemblyName>
         <RootNamespace>ASK.HAL.Mvc</RootNamespace>
         <PackageReadmeFile>README.md</PackageReadmeFile>
-        <PackageLicenseExpression>LGPL-3.0-or-later</PackageLicenseExpression>
+        <PackageLicenseExpression>LGPL-3.0-only</PackageLicenseExpression>
         <TargetFrameworks>net8.0;net6.0</TargetFrameworks>
         <Version>1.2.0</Version>
     </PropertyGroup>

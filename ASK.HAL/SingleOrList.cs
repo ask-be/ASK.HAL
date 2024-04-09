@@ -11,8 +11,6 @@ internal class SingleOrList<T>
     {
         SingleValued = false;
         _values.AddRange(items.Where(x => x != null));
-        if (_values.Count == 0)
-            throw new ArgumentException("SingleOrList must contains at least one element");
     }
 
     internal SingleOrList(T single)

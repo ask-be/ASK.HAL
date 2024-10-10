@@ -289,7 +289,7 @@ public class Resource
     {
         try
         {
-            return Values.TryGetPropertyValue(propertyName, out var node) ? node.Deserialize<T>() : default;
+            return Values.TryGetPropertyValue(propertyName, out var node) ? node.Deserialize<T>(_jsonSerializerOptions) : default;
         }
         catch (Exception e)
         {

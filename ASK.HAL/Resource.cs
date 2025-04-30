@@ -205,7 +205,7 @@ public class Resource
         AddLinks(Constants.Curies, links);
         return this;
     }
-    
+
     /// <summary>
     /// Add single-valued Embedded Resource
     /// </summary>
@@ -213,12 +213,13 @@ public class Resource
     /// <param name="resource">Resource</param>
     /// <returns>Current resource for chaining</returns>
     /// <exception cref="ResourceException">Embedded resource already exists</exception>
-    public Resource AddEmbeddedResource(string rel, Resource resource)
+    public Resource? AddEmbeddedResource(string rel, Resource? resource)
     {
         if (ContainsEmbeddedResource(rel))
             throw new ResourceException($"An embedded resource with relation type '{rel}' already exists");
 
         _embedded.Add(rel, new SingleOrList<Resource>(resource));
+
         return this;
     }
 
@@ -229,7 +230,7 @@ public class Resource
     /// <param name="resources">Resources</param>
     /// <returns>Current resource for chaining</returns>
     /// <exception cref="ResourceException">Embedded resource already exists</exception>
-    public Resource AddEmbeddedResources(string rel, params Resource[] resources)
+    public Resource AddEmbeddedResources(string rel, params Resource[]? resources)
     {
         if (ContainsEmbeddedResource(rel))
             throw new ResourceException($"An embedded resource with relation type '{rel}' already exists");

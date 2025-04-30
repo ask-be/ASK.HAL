@@ -156,5 +156,43 @@ public class ResourceTests
         e.BirthDate.Day.Should().Be(23);
     }
 
+    [Fact]
+    public void CanCreateResourceWithNullableEmbeddedResource()
+    {
+        var self = "http://self";
+        var r = _resourceFactory.Create(self);
+        r.Add(new
+        {
+            FirstName = "John",
+            LastName = "Doe",
+            BirthDate = new DateTime(2024, 4, 23, 0, 0, 0, DateTimeKind.Local)
+        });
+
+        r.AddEmbeddedResource("test", null);
+
+        var embedded = r.GetEmbeddedResource("test");
+
+        embedded.Should().BeNull();
+    }
+
+    [Fact]
+    public void CanCreateResourceWithNullableEmbeddedResources()
+    {
+        var self = "http://self";
+        var r = _resourceFactory.Create(self);
+        r.Add(new
+        {
+            FirstName = "John",
+            LastName = "Doe",
+            BirthDate = new DateTime(2024, 4, 23, 0, 0, 0, DateTimeKind.Local)
+        });
+
+        r.AddEmbeddedResources("test", null);
+
+        var embedded = r.GetEmbeddedResources("test");
+
+        embedded.Should().BeEmpty();
+    }
+
     public record Employee(string FirstName, string LastName, DateTime BirthDate);
 }

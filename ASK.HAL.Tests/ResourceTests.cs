@@ -172,6 +172,9 @@ public class ResourceTests
 
         var embedded = r.GetEmbeddedResource("test");
 
+        var contains = r.ContainsEmbeddedResource("test");
+
+        contains.Should().BeTrue();
         embedded.Should().BeNull();
     }
 
@@ -191,6 +194,10 @@ public class ResourceTests
 
         var embedded = r.GetEmbeddedResources("test");
 
+        var contains = r.ContainsEmbeddedResource("test");
+
+        contains.Should().BeTrue();
+      
         embedded.Should().BeEmpty();
     }
 

@@ -156,5 +156,20 @@ public class ResourceTests
         e.BirthDate.Day.Should().Be(23);
     }
 
+    [Fact]
+    public void EmbeddedResourceCanBeNull()
+    {
+        var r = _resourceFactory.Create("http://self").AddEmbeddedResource("empty",null);
+        r.ContainsEmbeddedResource("empty").Should().BeTrue();
+        r.GetEmbeddedResource("empty").Should().BeNull();
+
+        var options = new JsonSerializerOptions();
+        options.Converters.Add(new ResourceJsonConverter());
+
+        var r2 = ResourceJsonSerializer.Deserialize(ResourceJsonSerializer.Serialize(r, options), options);
+        r2.ContainsEmbeddedResource("empty").Should().BeTrue();
+        r2.GetEmbeddedResource("empty").Should().BeNull();
+    }
+
     public record Employee(string FirstName, string LastName, DateTime BirthDate);
 }

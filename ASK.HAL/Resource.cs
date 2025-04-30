@@ -15,13 +15,13 @@ public class Resource
 {
     private readonly JsonSerializerOptions _jsonSerializerOptions;
     private readonly Dictionary<string, SingleOrList<Link>> _links;
-    private readonly Dictionary<string, SingleOrList<Resource>> _embedded;
+    private readonly Dictionary<string, SingleOrList<Resource>?> _embedded;
 
     internal Resource(JsonSerializerOptions jsonSerializerOptions)
     {
         _jsonSerializerOptions = jsonSerializerOptions;
         _links = new Dictionary<string, SingleOrList<Link>>();
-        _embedded = new Dictionary<string, SingleOrList<Resource>>();
+        _embedded = new Dictionary<string, SingleOrList<Resource>?>();
     }
     
     /// <summary>
@@ -34,7 +34,7 @@ public class Resource
     internal Resource(
         JsonSerializerOptions jsonSerializerOptions,
         Dictionary<string, SingleOrList<Link>> links,
-        Dictionary<string, SingleOrList<Resource>> embedded,
+        Dictionary<string, SingleOrList<Resource>?> embedded,
         JsonObject values)
     {
         _jsonSerializerOptions = jsonSerializerOptions;
@@ -71,10 +71,10 @@ public class Resource
     
     /// <summary>
     /// HAL establishes a mechanism called "curies" which allows for link relation types that are compact
-    /// and more human readable (eg. "acme:widgets"), whilst still offering a way that they MAY be expanded
+    /// and more human-readable (eg. "acme:widgets"), whilst still offering a way that they MAY be expanded
     /// into a dereferencable URI providing documentation (eg. "https://docs.acme.com/relations/widgets")
     /// To this end, HAL documents have a reserved link relation type called "curies".
-    /// <see cref="https://datatracker.ietf.org/doc/html/draft-kelly-json-hal-11#name-hal-curies"/> for more information.
+    /// <see href="https://datatracker.ietf.org/doc/html/draft-kelly-json-hal-11#name-hal-curies"/> for more information.
     /// </summary>
     /// <returns></returns>
     public IReadOnlyList<Link> GetCuries()
@@ -213,12 +213,13 @@ public class Resource
     /// <param name="resource">Resource</param>
     /// <returns>Current resource for chaining</returns>
     /// <exception cref="ResourceException">Embedded resource already exists</exception>
-    public Resource AddEmbeddedResource(string rel, Resource resource)
+    public Resource AddEmbeddedResource(string rel, Resource? resource)
     {
         if (ContainsEmbeddedResource(rel))
             throw new ResourceException($"An embedded resource with relation type '{rel}' already exists");
 
-        _embedded.Add(rel, new SingleOrList<Resource>(resource));
+        _embedded.Add(rel, resource == null ? null : new SingleOrList<Resource>(resource));
+
         return this;
     }
 
@@ -302,7 +303,7 @@ public class Resource
         return _links;
     }
 
-    internal IReadOnlyDictionary<string, SingleOrList<Resource>> GetEmbeddedResources()
+    internal IReadOnlyDictionary<string, SingleOrList<Resource>?> GetEmbeddedResources()
     {
         return _embedded;
     }

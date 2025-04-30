@@ -25,7 +25,7 @@ public class ResourceJsonConverter : JsonConverter<Resource>
         
         var values = new JsonObject(new JsonNodeOptions{PropertyNameCaseInsensitive = true});
         var links = new Dictionary<string, SingleOrList<Link>>();
-        var embedded = new Dictionary<string, SingleOrList<Resource>>();
+        var embedded = new Dictionary<string, SingleOrList<Resource>?>();
 
         while (reader.Read())
         {
@@ -39,7 +39,10 @@ public class ResourceJsonConverter : JsonConverter<Resource>
                 case Constants.Links:
                     foreach (var l in ReadSingleOrList(ref reader, options, DeserializeLink))
                     {
-                        links.Add(l.Key, l.Value);
+                        if (l.Value != null)
+                        {
+                            links.Add(l.Key, l.Value);
+                        }
                     }
                     break;
                 case Constants.Embedded:
@@ -57,7 +60,7 @@ public class ResourceJsonConverter : JsonConverter<Resource>
         return new Resource(options, links,embedded,values);
     }
     
-    private static Dictionary<string, SingleOrList<T>> ReadSingleOrList<T>(
+    private static Dictionary<string, SingleOrList<T>?> ReadSingleOrList<T>(
         ref Utf8JsonReader reader,
         JsonSerializerOptions options,
         DeserializeFunc<T> objReader)
@@ -67,7 +70,7 @@ public class ResourceJsonConverter : JsonConverter<Resource>
             throw new JsonException();
         }
 
-        var result = new Dictionary<string, SingleOrList<T>>();
+        var result = new Dictionary<string, SingleOrList<T>?>();
            
         while (reader.Read())
         {
@@ -117,6 +120,7 @@ public class ResourceJsonConverter : JsonConverter<Resource>
                 case JsonTokenType.False:
                     break;
                 case JsonTokenType.Null:
+                    result.Add(propertyName, null);
                     break;
                 default:
                     throw new JsonException();
@@ -183,18 +187,26 @@ public class ResourceJsonConverter : JsonConverter<Resource>
         foreach (var (key, embedded) in resource.GetEmbeddedResources())
         {
             WritePropertyName(writer, key, o);
-            if (embedded.SingleValued)
+
+            if (embedded == null)
             {
-                SerializeResource(embedded.Value, writer,  o);
+                writer.WriteNullValue();
             }
             else
             {
-                writer.WriteStartArray();
-                foreach (var e in embedded.Values)
+                if (embedded.SingleValued)
                 {
-                    SerializeResource(e, writer, o);
+                    SerializeResource(embedded.Value, writer,  o);
                 }
-                writer.WriteEndArray();
+                else
+                {
+                    writer.WriteStartArray();
+                    foreach (var e in embedded.Values)
+                    {
+                        SerializeResource(e, writer, o);
+                    }
+                    writer.WriteEndArray();
+                }
             }
         }
         writer.WriteEndObject();

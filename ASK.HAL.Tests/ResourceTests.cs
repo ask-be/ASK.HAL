@@ -170,6 +170,81 @@ public class ResourceTests
         r2.ContainsEmbeddedResource("empty").Should().BeTrue();
         r2.GetEmbeddedResource("empty").Should().BeNull();
     }
+    
+    [Fact]
+    public void Add_NewProperties_MergesCorrectly()
+    {
+        var r = _resourceFactory.Create("http://self");
+        r.Add(new { FirstName = "John" });
+    
+        r.GetValue<string>("FirstName").Should().Be("John");
+    }
+    
+    [Fact]
+    public void Add_MultipleTimes_MergesProperties()
+    {
+        var r = _resourceFactory.Create("http://self");
+        r.Add(new { Name = "John" });
+        r.Add(new { Age = 30, City = "Brussels" });
+    
+        r.GetValue<string>("Name").Should().Be("John");
+        r.GetValue<int>("Age").Should().Be(30);
+        r.GetValue<string>("City").Should().Be("Brussels");
+    }
+    
+    [Fact]
+    public void Add_ArrayProperties_Concatenates()
+    {
+        var r = _resourceFactory.Create("http://self");
+        r.Add(new { Tags = new[] { "HAL", "JSON" } });
+        r.Add(new { Tags = new[] { "C#", ".NET" } });
+    
+        var tags = r.GetValue<string[]>("Tags")!;
+        tags.Should().ContainInOrder("HAL", "JSON", "C#", ".NET");  // Concat!
+    }
+    
+    [Fact]
+    public void Add_ArrayMergeWithNulls_SkipsNulls()
+    {
+        var r = _resourceFactory.Create("http://self");
+        r.Add(new { Items = new[] { "keep" } });
+        r.Add(new { Items = new object?[] { null, "keep2" } });
+    
+        var items = r.GetValue<string[]>("Items")!;
+        items.Should().HaveCount(2);  // ✅ Null skipped
+        items.Should().Contain("keep", "keep2");
+    }
+    
+    [Fact]
+    public void Add_OverrideCaseInsensitive()
+    {
+        var r = _resourceFactory.Create("http://self");
+        r.Add(new { firstName = "John" });
+        r.Add(new { FirstName = "Jane" });  // Override
+    
+        r.GetValue<string>("FirstName").Should().Be("Jane");
+        r.GetValue<string>("firstname").Should().Be("Jane");
+    }
+    
+    [Fact]
+    public void AddCuries_Works()
+    {
+        var r = _resourceFactory.Create("http://self")
+            .AddCuries(new Link("http://rels.acme.com/docs/{rel}", name: "acme"));
+    
+        r.GetCuries().Should().HaveCount(1);
+    }
+    
+    [Fact]
+    public void AddEmbeddedResources_MultipleWithNull()
+    {
+        var r1 = _resourceFactory.Create("http://r1");
+        Resource r2 = null;
+        var r = _resourceFactory.Create("http://self")
+            .AddEmbeddedResources("items", r1, r2!);
+    
+        r.GetEmbeddedResources("items").Should().HaveCount(1);  // Null skipped
+    }
 
     public record Employee(string FirstName, string LastName, DateTime BirthDate);
 }

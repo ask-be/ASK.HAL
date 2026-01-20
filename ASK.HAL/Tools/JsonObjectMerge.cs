@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2024 Vincent DARON <vincent@ask.be>
 // SPDX-License-Identifier: LGPL-3.0-only
 
-using System.Diagnostics;
+using System.Reflection.Metadata.Ecma335;
 using System.Text.Json.Nodes;
 
 namespace ASK.HAL.Tools;
@@ -10,60 +10,42 @@ public static class JsonObjectMerge
 {
     public static void Merge(this JsonObject target, JsonObject? source)
     {
-        if(source is null)
-            return;
-        
-        foreach (var sourceProperty in source)
+        if (source is null) return;
+
+        foreach (var (key, sourceValue) in source)
         {
-            if(sourceProperty.Value is null)
-                continue;
-            
-            if(target.TryGetPropertyValue(sourceProperty.Key, out var targetProperty) && targetProperty is not null)
+            if (sourceValue is null) continue;
+
+            if (target.TryGetPropertyValue(key, out var targetValue) && targetValue is not null)
             {
-                MergeExistingProperty(sourceProperty.Key, targetProperty, sourceProperty.Value);
+                MergeProperty(targetValue, sourceValue);
             }
             else
             {
-                target.Add(sourceProperty.Key, DeepClone(sourceProperty.Value));
+                target[key] = sourceValue.DeepClone();
             }
         }
     }
 
-    private static void MergeExistingProperty(string propertyName,JsonNode targetPropertyValue, JsonNode sourcePropertyValue)
+    private static void MergeProperty(JsonNode targetPropertyValue, JsonNode sourcePropertyValue)
     {
-        switch (targetPropertyValue)
+        switch (targetPropertyValue, sourcePropertyValue)
         {
-            case JsonObject nestedTarget when sourcePropertyValue is JsonObject nestedSource:
-                Merge(nestedTarget,nestedSource);
+            case (JsonObject tObj, JsonObject sObj):
+                tObj.Merge(sObj);
                 break;
-            case JsonArray arrayTarget when sourcePropertyValue is JsonArray arraySource:
-                foreach (var e in arraySource.Where(x => x is not null))
+            case (JsonArray tArr, JsonArray sArr):
+                foreach (var e in sArr)
                 {
-                    Debug.Assert(e != null, nameof(e) + " != null");
-                    arrayTarget.Add(DeepClone(e));
+                    if (e is null)
+                        continue;
+                    
+                    tArr.Add(e.DeepClone());
                 }
                 break;
             default:
-                ReplaceWith(propertyName, targetPropertyValue,sourcePropertyValue);
+                targetPropertyValue.ReplaceWith(sourcePropertyValue.DeepClone());
                 break;
         }
-    }
-
-    private static JsonNode DeepClone(JsonNode node)
-    {
-#if NET7_0_OR_GREATER
-        return node.DeepClone();
-#else
-        return JsonNode.Parse(node.ToJsonString(), Constants.DefaultJsonNodeOptions);
-#endif
-    }
-    
-    private static void ReplaceWith(string propertyName,JsonNode target, JsonNode source)
-    {
-#if NET7_0_OR_GREATER
-        target.ReplaceWith(source.DeepClone());
-#else
-        target.Parent![propertyName] = DeepClone(source);
-#endif
     }
 }

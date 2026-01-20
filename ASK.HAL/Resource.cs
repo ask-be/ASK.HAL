@@ -66,7 +66,7 @@ public class Resource
     /// <returns></returns>
     public IReadOnlyList<Link> GetLinks(string rel)
     {
-        return _links.GetValueOrDefault(rel)?.Values ?? ArraySegment<Link>.Empty;
+        return _links.GetValueOrDefault(rel)?.Values ?? [];
     }
     
     /// <summary>
@@ -79,7 +79,7 @@ public class Resource
     /// <returns></returns>
     public IReadOnlyList<Link> GetCuries()
     {
-        return _links.GetValueOrDefault(Constants.Curies)?.Values ?? ArraySegment<Link>.Empty;
+        return _links.GetValueOrDefault(Constants.Curies)?.Values ?? [];
     }
 
     /// <summary>
@@ -101,7 +101,7 @@ public class Resource
     /// <returns></returns>
     public IReadOnlyList<Resource> GetEmbeddedResources(string rel)
     {
-        return _embedded.GetValueOrDefault(rel)?.Values ?? ArraySegment<Resource>.Empty;
+        return _embedded.GetValueOrDefault(rel)?.Values ?? [];
     }
 
     /// <summary>
@@ -254,8 +254,10 @@ public class Resource
         if (values == null)
             return this;
 
-        var node = JsonSerializer.SerializeToNode(onlyFields != null ? onlyFields(values) : values, _jsonSerializerOptions);
-
+        var node = JsonSerializer.SerializeToNode(
+            onlyFields?.Invoke(values) ?? values, 
+            _jsonSerializerOptions);
+    
         Values.Merge(node?.AsObject());
         return this;
     }

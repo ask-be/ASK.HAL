@@ -23,11 +23,12 @@ public class SampleApiController : Controller
     [Route("/api/sample")]
     public IActionResult ReturnResourceOptions()
     {
-        Response.SetAllowHeader(HttpMethod.Get,HttpMethod.Post,HttpMethod.Delete, HttpMethod.Patch);
+        Response.SetAllowHeader(HttpMethod.Get, HttpMethod.Post, HttpMethod.Delete, HttpMethod.Patch);
         return Ok();
     }
     
     [HttpGet]
+    [Consumes(Constants.HypertextApplicationLanguageJsonMediaType)]
     [Route("/api/sample", Name = "test")]
     public IActionResult ReturnResource([FromQuery]string? expand)
     {
